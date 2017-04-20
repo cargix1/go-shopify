@@ -49,6 +49,7 @@ type Client struct {
 	Order    OrderService
 	Shop     ShopService
 	Webhook  WebhookService
+	Carrier  CarrierService
 }
 
 // A general response error that follows a similar layout to Shopify's response
@@ -139,6 +140,7 @@ func NewClient(app App, shopName, token string) *Client {
 	c.Order = &OrderServiceOp{client: c}
 	c.Shop = &ShopServiceOp{client: c}
 	c.Webhook = &WebhookServiceOp{client: c}
+	c.Carrier = &CarrierServiceOp{client: c}
 
 	return c
 }
@@ -297,4 +299,10 @@ func (c *Client) Post(path string, data, resource interface{}) error {
 // resource.
 func (c *Client) Put(path string, data, resource interface{}) error {
 	return c.CreateAndDo("PUT", path, data, nil, resource)
+}
+
+// Perform a Delete request for the given path and save the result in the given
+// resource.
+func (c *Client) Delete(path string, resource interface{}) error {
+	return c.CreateAndDo("DELETE", path, nil, nil, resource)
 }
