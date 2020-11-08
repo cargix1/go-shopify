@@ -24,13 +24,13 @@ type CarrierServiceOp struct {
 
 // Carrier represents a Shopify carrier service
 type Carrier struct {
-    Id                   int64  `json:"id"`
-    Name                 string `json:"name"`
-    Active               bool   `json:"active"`
-    ServiceDiscovery     bool   `json:"service_discovery"`
-    CarrierServiceType 	 string `json:"carrier_service_type"`
-    Format               string `json:"format"`
-    CallbackUrl          string `json:"callback_url"`
+	Id                 int64  `json:"id"`
+	Name               string `json:"name"`
+	Active             bool   `json:"active"`
+	ServiceDiscovery   bool   `json:"service_discovery"`
+	CarrierServiceType string `json:"carrier_service_type"`
+	Format             string `json:"format"`
+	CallbackUrl        string `json:"callback_url"`
 }
 
 // Represents the result from the carrier_services/X.json endpoint
@@ -69,9 +69,7 @@ func (s *CarrierServiceOp) Create(carrier Carrier) (*Carrier, error) {
 }
 
 // Delete carrier service
-func (s *CarrierServiceOp) Delete(carrierServiceID int64) (*Carrier, error) {
+func (s *CarrierServiceOp) Delete(carrierServiceID int64) error {
 	path := fmt.Sprintf("%s/%v.json", carrierBasePath, carrierServiceID)
-	resource := new(CarrierResource)
-	err := s.client.Delete(path, resource)
-	return resource.Carrier, err
+	return s.client.Delete(path)
 }
