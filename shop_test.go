@@ -1,17 +1,18 @@
 package goshopify
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
-	"gopkg.in/jarcoal/httpmock.v1"
+	"github.com/jarcoal/httpmock"
 )
 
 func TestShopGet(t *testing.T) {
 	setup()
 	defer teardown()
 
-	httpmock.RegisterResponder("GET", "https://fooshop.myshopify.com/admin/shop.json",
+	httpmock.RegisterResponder("GET", fmt.Sprintf("https://fooshop.myshopify.com/%s/shop.json", client.pathPrefix),
 		httpmock.NewBytesResponder(200, loadFixture("shop.json")))
 
 	shop, err := client.Shop.Get(nil)
@@ -31,12 +32,20 @@ func TestShopGet(t *testing.T) {
 		expected interface{}
 		actual   interface{}
 	}{
-		{"ID", 690933842, shop.ID},
+		{"ID", int64(690933842), shop.ID},
 		{"ShopOwner", "Steve Jobs", shop.ShopOwner},
 		{"Address1", "1 Infinite Loop", shop.Address1},
 		{"Name", "Apple Computers", shop.Name},
 		{"Email", "steve@apple.com", shop.Email},
 		{"HasStorefront", true, shop.HasStorefront},
+		{"Source", "", shop.Source},
+		{"GoogleAppsDomain", "", shop.GoogleAppsDomain},
+		{"GoogleAppsLoginEnabled", false, shop.GoogleAppsLoginEnabled},
+		{"MoneyInEmailsFormat", "${{amount}}", shop.MoneyInEmailsFormat},
+		{"MoneyWithCurrencyInEmailsFormat", "${{amount}} USD", shop.MoneyWithCurrencyInEmailsFormat},
+		{"EligibleForPayments", true, shop.EligibleForPayments},
+		{"RequiresExtraPaymentsAgreement", false, shop.RequiresExtraPaymentsAgreement},
+		{"PreLaunchEnabled", false, shop.PreLaunchEnabled},
 	}
 
 	for _, c := range cases {

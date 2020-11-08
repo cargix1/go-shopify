@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const webhooksBasePath = "admin/webhooks"
+const webhooksBasePath = "webhooks"
 
 // WebhookService is an interface for interfacing with the webhook endpoints of
 // the Shopify API.
@@ -13,20 +13,21 @@ const webhooksBasePath = "admin/webhooks"
 type WebhookService interface {
 	List(interface{}) ([]Webhook, error)
 	Count(interface{}) (int, error)
-	Get(int, interface{}) (*Webhook, error)
+	Get(int64, interface{}) (*Webhook, error)
 	Create(Webhook) (*Webhook, error)
 	Update(Webhook) (*Webhook, error)
+	Delete(int64) error
 }
 
-// ShopServiceOp handles communication with the shop related methods of the
-// Shopify API.
+// WebhookServiceOp handles communication with the webhook-related methods of
+// the Shopify API.
 type WebhookServiceOp struct {
 	client *Client
 }
 
 // Webhook represents a Shopify webhook
 type Webhook struct {
-	ID                  int        `json:"id"`
+	ID                  int64      `json:"id"`
 	Address             string     `json:"address"`
 	Topic               string     `json:"topic"`
 	Format              string     `json:"format"`
@@ -36,16 +37,18 @@ type Webhook struct {
 	MetafieldNamespaces []string   `json:"metafield_namespaces"`
 }
 
+// WebhookOptions can be used for filtering webhooks on a List request.
 type WebhookOptions struct {
 	Address string `url:"address,omitempty"`
 	Topic   string `url:"topic,omitempty"`
 }
 
-// Represents the result from the admin/shop.json endpoint
+// WebhookResource represents the result from the admin/webhooks.json endpoint
 type WebhookResource struct {
 	Webhook *Webhook `json:"webhook"`
 }
 
+// WebhooksResource is the root object for a webhook get request.
 type WebhooksResource struct {
 	Webhooks []Webhook `json:"webhooks"`
 }
@@ -65,7 +68,7 @@ func (s *WebhookServiceOp) Count(options interface{}) (int, error) {
 }
 
 // Get individual webhook
-func (s *WebhookServiceOp) Get(webhookdID int, options interface{}) (*Webhook, error) {
+func (s *WebhookServiceOp) Get(webhookdID int64, options interface{}) (*Webhook, error) {
 	path := fmt.Sprintf("%s/%d.json", webhooksBasePath, webhookdID)
 	resource := new(WebhookResource)
 	err := s.client.Get(path, resource, options)
@@ -88,4 +91,9 @@ func (s *WebhookServiceOp) Update(webhook Webhook) (*Webhook, error) {
 	resource := new(WebhookResource)
 	err := s.client.Put(path, wrappedData, resource)
 	return resource.Webhook, err
+}
+
+// Delete an existing webhooks
+func (s *WebhookServiceOp) Delete(ID int64) error {
+	return s.client.Delete(fmt.Sprintf("%s/%d.json", webhooksBasePath, ID))
 }
