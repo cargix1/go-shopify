@@ -1,6 +1,9 @@
 package goshopify
 
-import "fmt"
+import (
+	"fmt"
+	"net/url"
+)
 
 // Option is used to configure client with options
 type Option func(c *Client)
@@ -26,5 +29,11 @@ func WithRetry(retries int) Option {
 func WithLogger(logger LeveledLoggerInterface) Option {
 	return func(c *Client) {
 		c.log = logger
+	}
+}
+
+func WithBaseURL(baseURL *url.URL) Option {
+	return func(c *Client) {
+		c.baseURL = baseURL
 	}
 }
