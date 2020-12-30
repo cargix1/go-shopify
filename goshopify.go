@@ -316,12 +316,12 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 	var err error
 	retries := c.retries
 	c.attempts = 0
-	c.logRequest(req)
+	// c.logRequest(req)
 
 	for {
 		c.attempts++
 		resp, err = c.Client.Do(req)
-		c.logResponse(resp)
+		// c.logResponse(resp)
 		if err != nil {
 			return nil, err //http client errors, not api responses
 		}
@@ -364,7 +364,7 @@ func (c *Client) doGetHeaders(req *http.Request, v interface{}) (http.Header, er
 		return nil, respErr
 	}
 
-	c.logResponse(resp)
+	// c.logResponse(resp)
 	defer resp.Body.Close()
 
 	if c.apiVersion == defaultApiVersion && resp.Header.Get("X-Shopify-API-Version") != "" {

@@ -20,6 +20,29 @@ func productTests(t *testing.T, product Product) {
 	}
 }
 
+func BenchmarkProductList(b *testing.B) {
+	setup()
+	defer teardown()
+
+	httpmock.RegisterResponder(
+		"GET",
+		fmt.Sprintf("https://fooshop.myshopify.com/%s/products.json", client.pathPrefix),
+		httpmock.NewBytesResponder(
+			200,
+			loadFixture("products.json"),
+		),
+	)
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		_, err := client.Product.List(nil)
+		if err != nil {
+			b.Errorf("Product.List returned error: %v", err)
+		}
+	}
+}
+
 func TestProductList(t *testing.T) {
 	setup()
 	defer teardown()

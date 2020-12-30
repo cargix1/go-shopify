@@ -146,7 +146,7 @@ func TestVariantCreate(t *testing.T) {
 
 	variant := Variant{
 		Option1: "Yellow",
-		Price:   &price,
+		Price:   price,
 	}
 	result, err := client.Variant.Create(1, variant)
 	if err != nil {
@@ -166,7 +166,7 @@ func TestVariantCreateWithMetafields(t *testing.T) {
 
 	variant := Variant{
 		Option1: "Blue",
-		Price:   &price,
+		Price:   price,
 	}
 	result, err := client.Variant.Create(1, variant)
 	if err != nil {
@@ -415,7 +415,7 @@ func TestVariantCreateWithTaxCode(t *testing.T) {
 
 	variant := Variant{
 		Option1: "Yellow",
-		Price:   &price,
+		Price:   price,
 		TaxCode: "P0000000",
 	}
 	result, err := client.Variant.Create(1, variant)
